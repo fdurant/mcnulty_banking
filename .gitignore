@@ -5,3 +5,5 @@ _site
 .ipynb_checkpoints
 mydata
 test
+credentials.py
+testmysql.py
