@@ -7,5 +7,3 @@ mydata
 test
 credentials.py
 testmysql.py
-*.html
-*.json
