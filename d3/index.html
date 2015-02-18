@@ -1,10 +1,9 @@
-<!DOCTYPE html>
 <html>
   <head>
   <link rel="stylesheet" type="text/css" href="nv.d3.css">
-  <link rel="stylesheet" type="text/css" href="d3.slider.css">
   <link rel="stylesheet" type="text/css" href="my.css">
-  <title>Project: Target Marketing for a Bank Product: Profit Curve</title>
+  <link rel="stylesheet" type="text/css" href="d3.slider.css">
+  <title>Project: Target Marketing for a Bank</title>
   <!--script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script-->
   <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
   <!--script src="nv.d3.min.js" charset="utf-8"></script)-->
@@ -13,6 +12,15 @@
   </head>
 
   <body>
+    <h2 align="center">ROC Curve for prediction of successful term deposit sale</h2>
+    <svg id="roccurve" height="500px"></svg>
+    <script src="ROCCurve.js" type="text/javascript" charset="utf-8"></script>
+
+    <h2 align="center">Lift Curve for prediction of successful term deposit sale</h2>
+    <h4 align="center">Trained model performance vs. baseline performance</h4>
+    <svg id="liftcurve" height="500px"></svg>
+    <script src="LiftCurve.js" type="text/javascript" charset="utf-8"></script>
+    
     <h2 align="center">Profit Curve for prediction of successful term deposit sale</h2>
     <h4 align="center">Knowing if/when to stop the campaign</h4>
 
