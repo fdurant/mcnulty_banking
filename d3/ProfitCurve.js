@@ -19,12 +19,12 @@ costSlider.callback(costCallbackFn);
 
 var defaultAvgRevenuePerContact = 50;
 var revSlider = d3.slider()
-    .min(10)
+    .min(5)
     .max(100)
     .showRange(true)
-    .ticks(10)
+    .ticks(19)
     .value(defaultAvgRevenuePerContact)
-    .stepValues([10,20,30,40,50,60,70,80,90,100]);
+    .stepValues([5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]);
 
 var revCallbackFn = function(revSlider) {
     //    console.log("selected revenue = " + revSlider.value())
