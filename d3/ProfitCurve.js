@@ -227,8 +227,8 @@ d3.json("ProfitCurve.json", function(error, json) {
 		};
 		
 		// Added by Frederik
-		chart.tooltipContent(f);
-		
+		//chart.tooltipContent(f);
+
 		chart.xAxis     //Chart x-axis settings
 		    .axisLabel('Percentage of test instances (decreasing by probability)')
 		    .tickFormat(d3.format('d'));

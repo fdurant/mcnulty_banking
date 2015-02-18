@@ -2,6 +2,11 @@
   margin-top: 290px;
 }
 
+.nvtooltip .nv-pointer-events-none {
+/*  margin-top: 290px;*/
+}
+
+
 text.nv-axislabel {
   font-size:14pt;
 }
