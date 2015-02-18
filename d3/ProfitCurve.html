@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" type="text/css" href="nv.d3.css">
+  <link rel="stylesheet" type="text/css" href="my.css">
+  <link rel="stylesheet" type="text/css" href="d3.slider.css">
+  <title>Project: Target Marketing for a Bank Product: Profit Curve</title>
+  <!--script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script-->
+  <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+  <!--script src="nv.d3.min.js" charset="utf-8"></script)-->
+  <script src="nv.d3.js" charset="utf-8"></script>
+  <script src="d3.slider.js" charset="utf-8"></script>
+  </head>
+
+  <body>
+    <h2 id="lift_curve" align="center">Profit Curve for prediction of successful term deposit sale</h2>
+    <h4 align="center">Knowing if/when to stop spending</h4>
+
+    <div style="clear:both">
+    <div style="float:left;">avg. cost / contact (USD):</div>
+    <span style="margin-left: 10px; width:40%; float:left;" id="avgCostPerContactSlider"></span>
+    <div style="margin-left: 10px; float:left"><strong id="avgCostPerContactSliderText">10</strong></div>
+    </div>
+    
+    <div style="clear:both; margin-top:50px;">
+    <div style="float:left;">avg. revenue / contact (USD):</div>
+    <span style="margin-left: 10px; width:40%; float:left;" id="avgRevenuePerContactSlider"></span>
+    <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
+    </div>
+
+    <!--p>average revenue / contact (USD): <span id="avgRevenuePerContactSliderText">0</span></p-->
+    <!--div style="width: 70%;" id="avgRevenuePerContactSlider"></div-->
+    <svg height="450px"></svg>
+    <script src="ProfitCurve.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>

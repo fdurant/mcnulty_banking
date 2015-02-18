@@ -7,10 +7,12 @@ d3.json("LiftCurve.json", function(error, json) {
 	  
 	  {"modelName_1": {"xPerc": [ 10.0, 50.0, 100.0 ],
                            "yPerc": [ 45.0, 75.0, 100.0 ],
-                           "lifts": [ 4.5, 1.5, 1.0 ]},
+                           "cumLift": [ 4.5, 1.5, 1.0 ],
+                           "localLift": [ 4.5, 3.0, 0.2 ]},
 	   "modelName_2": {"xPerc": [ 10.0, 50.0, 100.0 ],
                            "yPerc": [ 45.0, 75.0, 100.0 ],
-                           "lifts": [ 4.5, 1.5, 1.0 ]}
+                           "cumLift": [ 4.5, 1.5, 1.0 ],
+                           "localLift": [ 4.5, 3.0, 0.2 ]}
 	  }
 	  
 	  where modelName is one of: 'knn', 'logres', 'gaussianNB' and 'baseline'
