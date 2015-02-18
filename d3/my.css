@@ -1,3 +1,7 @@
 .nvtooltip {
   margin-top: 290px;
 }
+
+text.nv-axislabel {
+  font-size:14pt;
+}
