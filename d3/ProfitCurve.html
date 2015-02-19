@@ -16,6 +16,10 @@
     <h2 align="center">Profit Curve for prediction of successful term deposit sale</h2>
     <h4 align="center">Knowing if/when to stop the campaign</h4>
 
+    <div id="containerForSlidersAndProfitCurve" style="padding-top:0px">
+
+    <div id="containerFor2Sliders" style="height:100; padding-left:10px;">
+    
     <div style="clear:both;">
     <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
     <span style="margin-left: 10px; margin-top: -25px; width:325px; float:left; margin-bottom:0px;" id="avgCostPerContactSlider"></span>
@@ -26,9 +30,14 @@
     <div style="float:left;">avg. revenue / successful sale (USD):</div>
     <span style="margin-left: 2px; margin-top:-25px; width:650px; float:left;" id="avgRevenuePerContactSlider"></span>
     <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
-    </div-->
+    </div>
+
+    </div><!-- containerFor2Sliders -->
 
     <svg id="profitcurve" style="clear:both;" height="400px"></svg>
     <script src="ProfitCurve.js" type="text/javascript" charset="utf-8"></script>
+
+    </div><!-- containerForSlidersAndProfitCurve -->
+
   </body>
 </html>

@@ -27,7 +27,7 @@
 
     <p>A bank wants to run a targeted marketing campaign in order to <strong>sell a term deposit product</strong>.</p>
 
-    <p>Given a certain <strong>campaign budget</strong>:</p>
+    <p>Given a certain (but unspecified) <strong>campaign budget</strong>:</p>
 
     <ul>
       <li><strong>Which customers</strong> should it target?</li>
@@ -36,7 +36,7 @@
     </ul>
 
     <p>The bank has a <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" target="_blank">database of 41K past customer 
-	call records</a>, with an indication of successful and failed sales of this product.</p>
+	contact records</a>, with an indication of successful and failed sales of this product.</p>
 
     <h2>Technical assignment</h2>
 
@@ -68,9 +68,9 @@
 
     <p>Hint: move the mouse over the graph, to highlight individual line points</p>
 
-    <small align="right">[<a href="ROCCurve.html" target="_roc">full view</a>]</small>
-    <svg id="roccurve" style="height:400px; width:90%"></svg>
+    <svg id="roccurve" style="height:400px; width:100%; border-style:solid; border-width:1px; border-color:black;"></svg>
     <script src="ROCCurve.js" type="text/javascript" charset="utf-8"></script>
+    <p align="right"><small>[<a href="ROCCurve.html" target="_roc">full view</a>]</small></p>
 
     <p>Inside the <a href="http://en.wikipedia.org/wiki/False_positives_and_false_negatives" target="_blank">False Positive Rate</a> intervals [0-0.07] and [0.54-1.00] (horizontal axis), the 
       <a href="http://en.wikipedia.org/wiki/Logistic_regression" target="_blank">logistic regression</a> model 
@@ -82,17 +82,18 @@
       In business terms, they will have to make a trade-off between:</p>
     <ul>
       <li>Reaching sufficiently interested customers, which will bring in revenue</li>
-      <li>Annoying too many uninterested ones, while incurring the cost of making the calls</li>
+      <li>Annoying too many uninterested ones, while incurring the cost of making the contact</li>
     </ul>
 
-    <p>We will now see how to better formulate this trade-off <strong>in operational terms</strong>.</p>
+    <p>Let's formulate this trade-off <strong>in operational terms</strong>.</p>
 
     <h2 align="center">Lift Curve: trained model vs. baseline performance</h2>
 
     <p>From our <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" target="_blank">reference dataset</a>, we know that only a fraction (&lt;10 &#37;) of our potential customers is going to accept an
   offer to buy the term deposit product. The question, of course, is <strong>who</strong> these customers are. For each customer,
-      our trained models return a probability estimate of their purchase of the product. This probability allows us to <strong>rank our
-	customers</strong> accordingly, which will be instrumental in making smart(er) decisions.</p>
+      our trained models return a <strong>probability estimate</strong> of their purchase of the product.
+      This probability allows us to <strong>rank our
+	customers</strong> accordingly, which is key to making smart(er) decisions.</p>
 
     <p>But first, for the sake of the argument, let's assume we only know the distribution of yes/no answers in the reference data set,
       and nothing more. The (near-perfect) diagonal line from (0,0) to (100, 100) in the graph below
@@ -100,49 +101,115 @@
       who might accept or reject the offer, according to this yes/no distribution. Lacking any other information, this is how
       bad we would do, <strong>worst case</strong>.</p>
 
-    <p> So, in the baseline case, if we were to call 20&#37; of the customers, we can expect to
+    <p> So, in the baseline case, if we were to contact 20&#37; of the customers, we can expect to
       hit approximately that same 20&#37; of all customers who would actually buy the product. This is approximately
       true for any other percentage point along this (near-perfect) diagonal.</p>
 
-    <svg id="liftcurve" style="height:400px; width:90%"></svg>
+    <svg id="liftcurve" style="height:400px; width:100%; border-style:solid; border-width:1px;"></svg>
+    <p align="right"><small>[<a href="LiftCurve.html" target="_lift">full view</a>]</small></p>
     <script src="LiftCurve.js" type="text/javascript" charset="utf-8"></script>    
 
     <p>Luckily, we <strong>do</strong> have more information, so we <strong>can</strong> do better! For example, hover
       over data point (20.0, 63.2) on the upper KNN line. This data point means that by merely selecting the top-ranked
       <strong>one fifth</strong> of our customers, we can expect to hit no less than <strong>two thirds</strong> of all customers
-      who would actually buy!</p>
-    <p>The <strong>cumulative lift</strong> is mentioned in the table that appears when hovering over the curves.
-      It is simply defined as the ratio of the y over the x value in that point.
+      who would actually buy the product!</p>
+    <p>Each table that appears when hovering over the data points also mentions <strong>cumulative lift</strong>.
+      This measure is simply defined as the ratio of the y over the x value in that point.
       For the example data point at (20.0, 63.2), lift is equal to the trained model yield (63.2 percent)
       divided by the (theoretical) baseline yield at the same x value, so lift is 63.2 / 20.0 = 3.16. In the steep left parts
       of the trained model curves, cumulative lift rises sharply. On the KNN curve, it reaches its maximum value (4.13) at x=13.0.
     </p>
 
-    <p>So based on the lift graph alone, the bank could decide to <strong><u>call its 13% top-ranked customers, and then stop</u></strong>.</p>
+    <p>So based on the lift graph alone, the bank could decide to <strong><u>contact its 13% top-ranked customers, and then stop</u></strong>.</p>
 
-    <p>Alternatively, it could also decide to only stop calling customers when the <strong>local lift</strong> (i.e. the lift in
+    <p>Alternatively, it could also decide to only stop contacting customers when the <strong>local lift</strong> (i.e. the lift in
       the percentile immediately preceding the point) starts dropping below 1, i.e. performing worse than the (theoretical) baseline.
-      On the KNN curve, local lift fluctuates around 1 in the x interval [19.0-32.0], so that is not such an unambiguous call.</p>
+      On the KNN curve, local lift fluctuates around 1 in the x interval [19.0-32.0], so this is not such a clear-cut decision.</p>
     
     <p>Now, despite all these niceties, there's still one ingredient missing: <strong>money</strong>!</p>
 
     <h2>Profit Curve: knowing when to stop the campaign</h2>
 
-    <div id="containerFor2Sliders" style="height:100;">
+    <p>Each customer contact costs money, but also carries a potential reward in the form of future revenue.
+      Let's bring in two new variables:</p>
+
+    <ul>
+      <li>the <strong>average cost per contact</strong>. This cost is incurred irrespective of whether the 
+	contact leads to a sale or not.</li>
+      <li>the <strong>average revenue per <em>successful</em> contact</strong>. An unsuccesful contact brings
+	in zero revenue, by definition.</li>
+    </ul>
+
+    <p>Even though we have to limit ourselves to averages, these variables do allow us to improve on our rather abstract lift curve.
+      The default <strong>profit curve</strong> below assumes that each contact (successful or not) costs $10 on average,
+      while the average <em>successful</em> one carries $50 in revenue.
+      </p>
+
+    <p>In this default configuration, the KNN profit curve maxes out at x=14, bringing in $6840 of cumulative profit.
+      Compare this to the cumulative loss of $2410 in case we would just contact customers in random order.
+      As a matter of fact, the current cost/revenue configuration would constantly write in the red in the baseline case.</p>
+
+    <div id="containerForSlidersAndProfitCurve" style="border-style:solid; border-width:1px; border-color:black; padding:25px 5px 5px 0px">
+
+    <div id="containerFor2Sliders" style="height:100; padding-left:10px;">
     
-      <div style="clear:both;"/>
+      <div style="clear:both;">
       <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
       <span style="margin-left: 10px; margin-top: -25px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSlider"></span>
-      <div style="margin-left: 10px; float:left;"><strong id="avgCostPerContactSliderText">10</strong></div>
+      <div style="margin-left: 10px; margin-top: -5px; float:left;"><strong id="avgCostPerContactSliderText">10</strong></div>
+      </div>
 
-      <div style="clear:both;"/>
+      <div style="clear:both;">
       <div style="float:left;">avg. revenue / successful sale (USD):</div>
       <span style="margin-left: 2px; margin-top:-25px; width:60%; float:left;" id="avgRevenuePerContactSlider"></span>
-      <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
+      <div style="margin-left: 10px; margin-top:-5px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
+      </div>
 
-    </div>
+    </div><!-- containerFor2Sliders -->
 
-    <svg id="profitcurve" style="height:400px; width:90%"></svg>
+    <svg id="profitcurve" style="height:400px; width:100%;"></svg>
     <script src="ProfitCurve.js" type="text/javascript" charset="utf-8"></script>
+
+    </div><!-- containerForSlidersAndProfitCurve -->
+    <p align="right"><small>[<a href="ProfitCurve.html" target="_profit">full view</a>]</small></p>
+
+    <p>Now increase the average revenue per successful contact to $90, using the second slider
+      on top of the graph above, and watch attentively. By increasing the profit per successful contact to 
+      <span style="white-space:nowrap">$90-$10=$80</span>, the shape of the profit curve
+      has taken a different form. Cumulative profit now tops at $17.530, but to get there we have to contact 20&#37; 
+      of all customers. Also, if we were to contact <em>all</em> (100&#37;) customers, we would more or less break even, with
+      a cumulative loss of only $330.</p>
+
+    <p>Finally, increase both sliders with $10, so their respective values become $20 and $100. While this has no effect
+      on the profit per successful contact <span style="white-space:nowrap">($100-$20 = $80 = $90-$10)</span>, the loss per
+      <em>failed</em> contact has <em>doubled</em> from $10 to $20. As a result, the trained model profit curves now cross
+      the breakeven line again (around x=40&#37;), while the baseline curve goes permanently in the red again.</p>
+
+    <p>The bottom line is that any specific configuration of cost and revenue greatly influences the shape of the curves,
+      the profitability intervals, and therefore the decision boundaries.</p>
+
+    <h2>Recommendations</h2>
+
+    <p>Customers must be targeted in descending order of their probability to buy the product. Running the trained models on the
+      unseen customer data will provide such a ranking.</p>
+
+    <p>To enable an informed decision on when to continue or halt the campaign, the bank must provide information on cost and revenue
+      per (successful) contact.
+      <ul>
+	<li>Without such information, we advise to stop when maximum cumulative lift is achieved,
+	  or when we have run out of budget, whichever comes first.</li>
+	<li>If we do have such information, we advise to stop when maximum profit is achieved,
+	  or when we have run out of budget, whichever comes first.</li>
+      </ul>
+    </p>
+
+    <h2>Additional resources</h2>
+
+    <ul>
+      <li>Foster Provost &amp; Tom Fawcett: <a href="http://shop.oreilly.com/product/0636920028918.do" target="_blank">Data Science for Business. What you need to know about data mining and data-analytic thinking</a>. O'Reilly, 2013.<br/>Chapter 8: &quot;Visualizing Model Performance&quot; introduces the ROC, Lift and Profit curves.</li>
+      <li><a href="http://nvd3.org" target="_blank">NVD3. Re-usable charts for D3.js</a></li>
+      <li><a href="https://github.com/sujeetsr/d3.slider" target="_blank">D3.slider</a></li>
+    </ul>
+
   </body>
 </html>

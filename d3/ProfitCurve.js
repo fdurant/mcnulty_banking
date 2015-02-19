@@ -20,11 +20,11 @@ costSlider.callback(costCallbackFn);
 var defaultAvgRevenuePerContact = 50;
 var revSlider = d3.slider()
     .min(5)
-    .max(100)
+    .max(150)
     .showRange(true)
-    .ticks(19)
+    .ticks(15)
     .value(defaultAvgRevenuePerContact)
-    .stepValues([5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]);
+    .stepValues([10,20,30,40,50,60,70,80,90,100,110,120,130,140,150]);
 
 var revCallbackFn = function(revSlider) {
     //    console.log("selected revenue = " + revSlider.value())
@@ -158,7 +158,7 @@ d3.json("ProfitCurve.json", function(error, json) {
 	    var avgRevenuePerContactFromSlider = d3.select('#avgRevenuePerContactSliderText').text();
 
 	    var calculatedProfits = calculateProfits(sortedProbsAndTrueLabels,
-						     20, 
+						     50, 
 						     1, 
 						     avgCostPerContactFromSlider,
 						     avgRevenuePerContactFromSlider);
@@ -167,7 +167,7 @@ d3.json("ProfitCurve.json", function(error, json) {
 	    var values = [];
 	
 	    for (var i = 0; i < calculatedProfits.length; i++) {
-		values.push({x: Math.floor(calculatedProfits[i][0]), y: Math.floor(calculatedProfits[i][3]), intervalProfit: Math.floor(calculatedProfits[i][6])});
+		values.push({x: Math.round(calculatedProfits[i][0]), y: Math.floor(calculatedProfits[i][3]), intervalProfit: Math.floor(calculatedProfits[i][6])});
 	    }
 	
 	    mydata.push({ 'values': values, 'key': modelName, 'area': false});
