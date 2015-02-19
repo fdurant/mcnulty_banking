@@ -107,7 +107,7 @@ d3.json("LiftCurve.json", function(error, json) {
 		    .axisLabel('Percentage of positive instances targeted')
 		    .tickFormat(d3.format('.1f'));
 		
-		d3.select('svg#liftcurve')    //Select the <svg> element you want to render the chart in.   
+		d3.select('#liftcurve')    //Select the <svg> element you want to render the chart in.   
 		    .datum(mydata)         //Populate the <svg> element with chart data...
 		    .call(chart);          //Finally, render the chart!
 		

@@ -12,31 +12,137 @@
   </head>
 
   <body>
-    <h2 align="center">ROC Curve for prediction of successful term deposit sale</h2>
-    <svg id="roccurve" height="500px"></svg>
+    <p>During week 4, 5 and 6, the Metis Data Science Bootcamp zoomed in on the following technologies:</p>
+    <ul>
+      <li>SQL and mySQL in the <a href="https://www.digitalocean.com" target="_blank">cloud</a>;</li>
+      <li>Supervised learning with <a href="http://scikit-learn.org/" target="_blank">scikit-learn</a>
+	and <a href="http://statsmodels.sourceforge.net/" target="_blank">statsmodels</a>;</li>
+      <li>Interactive visualization with <a href="http://matplotlib.org/" target="_blank">matplotlib</a>, <a href="http://nbviewer.ipython.org/github/esss/ipython/blob/master/examples/Interactive%20Widgets/Index.ipynb" target="_blank">interactive widgets in iPython</a>, <a href="http://mpld3.github.io/" target="_blank">mpld3</a> and especially <a href="http://d3js.org/" target="_blank">D3.js</a>.</li>
+      </li>
+    </ul>
+
+    <p>The remainder of this article describes the project and business context in which these technologies were applied.</p>
+
+    <h2>Business questions</h2>
+
+    <p>A bank wants to run a targeted marketing campaign in order to <strong>sell a term deposit product</strong>.</p>
+
+    <p>Given a certain <strong>campaign budget</strong>:</p>
+
+    <ul>
+      <li><strong>Which customers</strong> should it target?</li>
+      <li>In <strong>what order</strong>?</li>
+      <li>Is it wise to spend the <strong>complete</strong> campaign budget?</li>
+    </ul>
+
+    <p>The bank has a <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" target="_blank">database of 41K past customer 
+	call records</a>, with an indication of successful and failed sales of this product.</p>
+
+    <h2>Technical assignment</h2>
+
+    <p>Using the database, build a model to:</p>
+
+    <ul>
+      <li><strong>predict</strong> which customers are (more) likely to buy the term deposit product</li>
+      <li><strong>rank</strong> customers by their propensity to buy the product</li>
+    </ul>
+
+    <p>To evaluate model performance, produce for each machine learning algorithm:</p>
+
+    <ul>
+      <li>an <a href="http://en.wikipedia.org/wiki/Receiver_operating_characteristic" target="_blank">ROC</a> curve</li>
+      <li>a <a href="http://en.wikipedia.org/wiki/Lift_(data_mining)">lift</a> curve</li>
+      <li>a profit curve</li>
+    </ul>
+
+    <h2>Data preparation, feature selection and model building</h2>
+
+    <p>For these steps, please check the <a href="http://nbviewer.ipython.org/github/fdurant/mcnulty_banking/blob/master/project_mcnulty_banking.ipynb" target="_blank">iPython notebook</a>, also available in our <a href="https://github.com/fdurant/mcnulty_banking" target="_">GitHub repository</a>.</p>
+
+    <h2>Model evaluation</h2>
+
+    <p>How well do our models perform? And much more importantly: how do they contribute to answering the business questions?</p>
+    <p>Let's start by looking at the <a href="http://en.wikipedia.org/wiki/Receiver_operating_characteristic" target="_blank">ROC curve</a>.</p>
+
+    <h3>ROC Curve: between a rock and a hard place</h3>
+
+    <p>Hint: move the mouse over the graph, to highlight individual line points</p>
+
+    <small align="right">[<a href="ROCCurve.html" target="_roc">full view</a>]</small>
+    <svg id="roccurve" style="height:400px; width:90%"></svg>
     <script src="ROCCurve.js" type="text/javascript" charset="utf-8"></script>
 
-    <h2 align="center">Lift Curve for prediction of successful term deposit sale</h2>
-    <h4 align="center">Trained model performance vs. baseline performance</h4>
-    <svg id="liftcurve" height="500px"></svg>
-    <script src="LiftCurve.js" type="text/javascript" charset="utf-8"></script>
-    
-    <h2 align="center">Profit Curve for prediction of successful term deposit sale</h2>
-    <h4 align="center">Knowing if/when to stop the campaign</h4>
+    <p>Inside the <a href="http://en.wikipedia.org/wiki/False_positives_and_false_negatives" target="_blank">False Positive Rate</a> intervals [0-0.07] and [0.54-1.00] (horizontal axis), the 
+      <a href="http://en.wikipedia.org/wiki/Logistic_regression" target="_blank">logistic regression</a> model 
+      scores best in terms of <a href="http://en.wikipedia.org/wiki/False_positives_and_false_negatives#true_positive" target="_blank">True Positive Rate</a> (vertical axis).
+      In between these two intervals, <a href="http://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm" target="_blank">KNN</a> (with k = 30) is the winning model.
+      But all in all, the three algorithms play in the same league.</p>
 
-    <div style="clear:both;">
-    <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
-    <span style="margin-left: 10px; margin-top: -25px; width:325px; float:left; margin-bottom:0px;" id="avgCostPerContactSlider"></span>
-    <div style="margin-left: 10px; float:left;"><strong id="avgCostPerContactSliderText">10</strong></div>
+    <p>The selection of a specific FPR/TPR combination (and of a corresponding best algorithm) is for our customer to make.
+      In business terms, they will have to make a trade-off between:</p>
+    <ul>
+      <li>Reaching sufficiently interested customers, which will bring in revenue</li>
+      <li>Annoying too many uninterested ones, while incurring the cost of making the calls</li>
+    </ul>
+
+    <p>We will now see how to better formulate this trade-off <strong>in operational terms</strong>.</p>
+
+    <h2 align="center">Lift Curve: trained model vs. baseline performance</h2>
+
+    <p>From our <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" target="_blank">reference dataset</a>, we know that only a fraction (&lt;10 &#37;) of our potential customers is going to accept an
+  offer to buy the term deposit product. The question, of course, is <strong>who</strong> these customers are. For each customer,
+      our trained models return a probability estimate of their purchase of the product. This probability allows us to <strong>rank our
+	customers</strong> accordingly, which will be instrumental in making smart(er) decisions.</p>
+
+    <p>But first, for the sake of the argument, let's assume we only know the distribution of yes/no answers in the reference data set,
+      and nothing more. The (near-perfect) diagonal line from (0,0) to (100, 100) in the graph below
+      represents such a baseline case. The model behind it was built by <a href="http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html" target="_">randomly guessing</a>
+      who might accept or reject the offer, according to this yes/no distribution. Lacking any other information, this is how
+      bad we would do, <strong>worst case</strong>.</p>
+
+    <p> So, in the baseline case, if we were to call 20&#37; of the customers, we can expect to
+      hit approximately that same 20&#37; of all customers who would actually buy the product. This is approximately
+      true for any other percentage point along this (near-perfect) diagonal.</p>
+
+    <svg id="liftcurve" style="height:400px; width:90%"></svg>
+    <script src="LiftCurve.js" type="text/javascript" charset="utf-8"></script>    
+
+    <p>Luckily, we <strong>do</strong> have more information, so we <strong>can</strong> do better! For example, hover
+      over data point (20.0, 63.2) on the upper KNN line. This data point means that by merely selecting the top-ranked
+      <strong>one fifth</strong> of our customers, we can expect to hit no less than <strong>two thirds</strong> of all customers
+      who would actually buy!</p>
+    <p>The <strong>cumulative lift</strong> is mentioned in the table that appears when hovering over the curves.
+      It is simply defined as the ratio of the y over the x value in that point.
+      For the example data point at (20.0, 63.2), lift is equal to the trained model yield (63.2 percent)
+      divided by the (theoretical) baseline yield at the same x value, so lift is 63.2 / 20.0 = 3.16. In the steep left parts
+      of the trained model curves, cumulative lift rises sharply. On the KNN curve, it reaches its maximum value (4.13) at x=13.0.
+    </p>
+
+    <p>So based on the lift graph alone, the bank could decide to <strong><u>call its 13% top-ranked customers, and then stop</u></strong>.</p>
+
+    <p>Alternatively, it could also decide to only stop calling customers when the <strong>local lift</strong> (i.e. the lift in
+      the percentile immediately preceding the point) starts dropping below 1, i.e. performing worse than the (theoretical) baseline.
+      On the KNN curve, local lift fluctuates around 1 in the x interval [19.0-32.0], so that is not such an unambiguous call.</p>
+    
+    <p>Now, despite all these niceties, there's still one ingredient missing: <strong>money</strong>!</p>
+
+    <h2>Profit Curve: knowing when to stop the campaign</h2>
+
+    <div id="containerFor2Sliders" style="height:100;">
+    
+      <div style="clear:both;"/>
+      <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
+      <span style="margin-left: 10px; margin-top: -25px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSlider"></span>
+      <div style="margin-left: 10px; float:left;"><strong id="avgCostPerContactSliderText">10</strong></div>
+
+      <div style="clear:both;"/>
+      <div style="float:left;">avg. revenue / successful sale (USD):</div>
+      <span style="margin-left: 2px; margin-top:-25px; width:60%; float:left;" id="avgRevenuePerContactSlider"></span>
+      <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
+
     </div>
 
-    <div style="clear:both;">
-    <div style="float:left;">avg. revenue / successful sale (USD):</div>
-    <span style="margin-left: 2px; margin-top:-25px; width:650px; float:left;" id="avgRevenuePerContactSlider"></span>
-    <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
-    </div-->
-
-    <svg id="profitcurve" style="clear:both;" height="400px"></svg>
+    <svg id="profitcurve" style="height:400px; width:90%"></svg>
     <script src="ProfitCurve.js" type="text/javascript" charset="utf-8"></script>
   </body>
 </html>

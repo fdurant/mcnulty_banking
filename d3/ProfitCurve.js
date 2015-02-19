@@ -237,7 +237,7 @@ d3.json("ProfitCurve.json", function(error, json) {
 		    .axisLabel('Profit (in USD)')
 		    .tickFormat(d3.format('d'));
 		
-		d3.select('svg#profitcurve')    //Select the <svg> element you want to render the chart in.   
+		d3.select('#profitcurve')    //Select the <svg> element you want to render the chart in.   
 		    .datum(mydata)         //Populate the <svg> element with chart data...
 		    .call(chart);          //Finally, render the chart!
 		

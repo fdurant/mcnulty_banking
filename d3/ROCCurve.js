@@ -59,7 +59,7 @@ d3.json("ROCCurve.json", function(error, json) {
 		    .tickFormat(d3.format('.02f'));
 		
 		
-		d3.select('svg#roccurve')    //Select the <svg> element you want to render the chart in.   
+		d3.select('#roccurve')    //Select the <svg> element you want to render the chart in.   
 		    .datum(mydata)         //Populate the <svg> element with chart data...
 		    .call(chart);          //Finally, render the chart!
 		
