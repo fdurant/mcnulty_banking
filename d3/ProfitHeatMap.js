@@ -57,6 +57,10 @@ d3.select("#model").on("change",function(){
 	recomputeAndRedrawHeatmap();
     });
 
+d3.select("#profittype").on("change",function(){
+	recomputeAndRedrawHeatmap();
+    });
+
 function getBaseLog(x, y) {
     if (y == 0) {
 	return 0;
@@ -84,6 +88,7 @@ d3.json("ProfitCurve.json", function(error, json) {
 	var mySortedProfitsPerModel = [];
 
 	var modelName = d3.select('#model').node().value;
+	var profitType = d3.select('#profittype').node().value;
 
 	var sortedProbsAndTrueLabels = json[modelName]['sortedProbsAndTrueLabels']; // Array of arrays containing (prob, true_label, id)
 
@@ -114,15 +119,21 @@ d3.json("ProfitCurve.json", function(error, json) {
 	    intervalProfit = Math.floor(calculatedProfits[i][6]);
 	    var row = Math.floor((i-1) / col_number);
 	    var col = Math.floor((i-1) % col_number);
-	    var heatVal = 0;
 	    var maxAbsoluteHeatval = Math.floor(colors.length / 2);
-	    if (cumulativeProfit >= 0) {
-		heatVal = Math.min(Math.floor(getBaseLog(3,cumulativeProfit)),
-				   maxAbsoluteHeatval);
+	    var heatVal = 0;
+	    if (profitType == 'cumulative') {
+		if (cumulativeProfit >= 0) {
+		    heatVal = Math.min(Math.floor(getBaseLog(3,cumulativeProfit)),
+				       maxAbsoluteHeatval);
+		}
+		else {
+		    heatVal = (-1 * Math.min(Math.floor(getBaseLog(3,cumulativeProfit * -1)),
+					     maxAbsoluteHeatval));
+		}
 	    }
 	    else {
-		heatVal = (-1 * Math.min(Math.floor(getBaseLog(3,cumulativeProfit * -1)),
-					 maxAbsoluteHeatval));
+		// profitType == single
+		heatVal = Math.floor(intervalProfit / 10);
 	    }
 
 	    values.push({row: row,
@@ -208,7 +219,7 @@ d3.json("ProfitCurve.json", function(error, json) {
 		    .style("top", (d3.event.pageY-10) + "px")
 		    .select("#value")
 		    //		    .text("point:"+d.row+","+d.col+"\ncumulative profit:"+d.cumProfit+"\ninstance ID:"+d.id+"\nheatVal:"+d.heatVal);
-		    .text("this customer with rank " + d.rank + " contributes " + d.intervalProfit + " USD; the new cumulative profit/loss is: "+d.cumProfit+" USD");
+		    .text("this customer (rank " + d.rank + ") contributes " + d.intervalProfit + " USD; the new cumulative profit/loss is: "+d.cumProfit+" USD");
 		    //Show the tooltip
 		    d3.select("#heatmaptooltip").classed("hidden", false);
 		})
