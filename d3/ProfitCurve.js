@@ -36,122 +36,16 @@ var avgRevenuePerContactSlider = d3.select('#avgRevenuePerContactSlider')
     .call(revSlider);
 revSlider.callback(revCallbackFn);
 
-/* Borrowed here: http://stackoverflow.com/questions/8495687/split-array-into-chunks*/
-Array.prototype.chunk = function(chunkSize) {
-    var R = [];
-    for (var i=0; i<this.length; i+=chunkSize)
-        R.push(this.slice(i,i+chunkSize));
-    return R;
-}
-
-function calculateProfits(sortedProbsAndTrueLabels, nrPercentiles, posLabel, avgCostPerContact, avgRevenuePerContact) {
-
-    /*
-      Inputs are:
-      - sortedProbsAndTrueLabels: an array of arrays containing (probability, true_label), sorted in descending order by probability
-      - posLabel (typically 1)
-      - average cost per contact
-      - average revenue per contact
-
-      Output is an array of arrays of the form
-      (percentOfTargetPopulationInThisPercentile,
-      cumulative revenue,
-      cumulative cost,
-      cumulative profit,
-      revenue for this percentile,
-      cost for this percentile,
-      profit for this percentile)
-      
-    */
-
-    var result = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]];
-
-    var numberOfPositiveInstances = 0;
-    for (var i = 0; i < sortedProbsAndTrueLabels.length; i++) {
-	if (sortedProbsAndTrueLabels[i][1] === posLabel) {
-	    numberOfPositiveInstances++;
-	}
-    }
-
-    var percentileSplitOfInstances = sortedProbsAndTrueLabels.chunk(Math.ceil(sortedProbsAndTrueLabels.length / nrPercentiles));
-
-    var cumulativeCost = 0.0;
-    var cumulativeRevenue = 0.0;
-    var cumulativeProfit = 0.0;
-
-    for (var c = 0; c < percentileSplitOfInstances.length; c++) {
-	var percentile = percentileSplitOfInstances[c];
-	var nrPositivesInPercentile = 0;
-	var nrNegativesInPercentile = 0;
-	for (var e = 0; e < percentile.length; e++) {
-	    var prob = percentile[e][0];
-	    var trueLabel = percentile[e][1];
-	    if (trueLabel == posLabel) {
-		nrPositivesInPercentile++;
-	    }
-	    else {
-		nrNegativesInPercentile++;
-	    }
-	}
-	
-	//	console.log("nrPositivesInPercentile:" + nrPositivesInPercentile);
-	//	console.log("nrNegativesInPercentile:" + nrNegativesInPercentile);
-
-        var p = (c+1)/nrPercentiles;
-        var costThisPercentile = avgCostPerContact * (nrPositivesInPercentile + nrNegativesInPercentile);
-        var revenueThisPercentile = avgRevenuePerContact * nrPositivesInPercentile;
-        var profitThisPercentile = revenueThisPercentile - costThisPercentile;
-
-        var cumulativeRevenue = cumulativeRevenue + revenueThisPercentile;
-        var cumulativeCost = cumulativeCost + costThisPercentile;
-        var cumulativeProfit = cumulativeProfit + profitThisPercentile;
-
-        result.push([p*100, 
-		     cumulativeRevenue, 
-		     cumulativeCost, 
-		     cumulativeProfit, 
-		     revenueThisPercentile, 
-		     costThisPercentile, 
-		     profitThisPercentile]);
-
-    }
-
-    //    console.log("numberOfPositiveInstances:" + numberOfPositiveInstances);
-    //    console.log("percentileSplitOfInstances.length: " + percentileSplitOfInstances.length);
-
-    return result;
-}
-
 /* Heavily inspired by http://nvd3.org/examples/line.html */
 
 function recomputeAndRedraw() {
 
 d3.json("ProfitCurve.json", function(error, json) {
 	
-	// json has the following structure:
-	/*
-	  
-	  {"modelName_1": {"xPerc": [ 10.0, 50.0, 100.0 ],
-                           "yProfit": [ 1000.0, 5000.0, 10000.0 ],
-                           "cumProfit": [ 1000.0, 5000.0, 10000.0 ]
-                           "intervalProfit": [ 1000.0, 4000.0, 5000.0 ]},
-	   "modelName_2": {"xPerc": [ 10.0, 50.0, 100.0 ],
-                           "yProfit": [ 1000.0, 5000.0, 10000.0 ],
-                           "cumProfit": [ 1000.0, 5000.0, 10000.0 ]
-                           "intervalProfit": [ 1000.0, 4000.0, 5000.0 ]}
-	  }
-	  
-	  where modelName is one of: 'knn', 'logres', 'gaussianNB' and 'baseline'
-	  
-	*/
-	
 	var mydata = [];
     
 	for (var modelName in json) {
 
-	    //	    var xPerc = json[modelName]['xPerc']; // Array of float
-	    //var yProfit = json[modelName]['yProfit']; // Array of float
-	    //var intervalProfit = json[modelName]['intervalProfit']; // Array of float
 	    var sortedProbsAndTrueLabels = json[modelName]['sortedProbsAndTrueLabels']; // Array of arrays containing (prob, true_label)
 
 	    var avgCostPerContactFromSlider = d3.select('#avgCostPerContactSliderText').text();
@@ -251,4 +145,4 @@ d3.json("ProfitCurve.json", function(error, json) {
 
 }
 
-recomputeAndRedraw(10,50);
+recomputeAndRedraw();

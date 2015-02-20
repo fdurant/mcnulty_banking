@@ -3,6 +3,7 @@
   <link rel="stylesheet" type="text/css" href="nv.d3.css">
   <link rel="stylesheet" type="text/css" href="my.css">
   <link rel="stylesheet" type="text/css" href="d3.slider.css">
+  <link rel="stylesheet" type="text/css" href="ProfitHeatMap.css">
   <title>Project: Target Marketing for a Bank</title>
   <!--script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script-->
   <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
@@ -70,7 +71,7 @@
 
     <svg id="roccurve" style="height:400px; width:100%; border-style:solid; border-width:1px; border-color:black;"></svg>
     <script src="ROCCurve.js" type="text/javascript" charset="utf-8"></script>
-    <p align="right"><small>[<a href="ROCCurve.html" target="_roc">full view</a>]</small></p>
+    <p align="right"><small>[<a href="ROCCurve.html" target="_roc">view in separate window</a>]</small></p>
 
     <p>Inside the <a href="http://en.wikipedia.org/wiki/False_positives_and_false_negatives" target="_blank">False Positive Rate</a> intervals [0-0.07] and [0.54-1.00] (horizontal axis), the 
       <a href="http://en.wikipedia.org/wiki/Logistic_regression" target="_blank">logistic regression</a> model 
@@ -106,7 +107,7 @@
       true for any other percentage point along this (near-perfect) diagonal.</p>
 
     <svg id="liftcurve" style="height:400px; width:100%; border-style:solid; border-width:1px;"></svg>
-    <p align="right"><small>[<a href="LiftCurve.html" target="_lift">full view</a>]</small></p>
+    <p align="right"><small>[<a href="LiftCurve.html" target="_lift">view in separate window</a>]</small></p>
     <script src="LiftCurve.js" type="text/javascript" charset="utf-8"></script>    
 
     <p>Luckily, we <strong>do</strong> have more information, so we <strong>can</strong> do better! For example, hover
@@ -168,10 +169,11 @@
     </div><!-- containerFor2Sliders -->
 
     <svg id="profitcurve" style="height:400px; width:100%;"></svg>
+    <script src="calcProfit.js" type="text/javascript" charset="utf-8"></script>
     <script src="ProfitCurve.js" type="text/javascript" charset="utf-8"></script>
 
     </div><!-- containerForSlidersAndProfitCurve -->
-    <p align="right"><small>[<a href="ProfitCurve.html" target="_profit">full view</a>]</small></p>
+    <p align="right"><small>[<a href="ProfitCurve.html" target="_profit">view in separate window</a>]</small></p>
 
     <p>Now increase the average revenue per successful contact to $90, using the second slider
       on top of the graph above, and watch attentively. By increasing the profit per successful contact to 
@@ -187,6 +189,47 @@
 
     <p>The bottom line is that any specific configuration of cost and revenue greatly influences the shape of the curves,
       the profitability intervals, and therefore the decision boundaries.</p>
+
+    <h2>Profit Heat Map: impressionistic view on cumulative profit</h2>
+
+    <div id="containerForControlsAndProfitHeatMap" style="padding-top:0px">
+
+      <div id="DropDownBoxForModel" style="height:20px;">
+	<span style="float:left; padding-left:10px; valign:middle padding-top:5px">Model</span>
+	<select id="model" style="float:left; margin-left:40px;">
+	  <option value="baseline" selected="selected">Baseline</option>
+	  <option value="knn">KNN</option>
+	  <option value="logres">Logistic Regression</option>
+	  <option value="gaussianNB">Gaussian Naive Bayes</option>
+	</select>
+      </div>
+      
+      <div id="containerFor2Sliders4Heatmap" style="clear:both; height:110; padding-left:10px; padding-top:30px;">
+    
+	<div style="clear:both;">
+	  <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
+	  <span style="margin-left: 10px; margin-top: -25px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSliderForHeatmap"></span>
+	  <div style="margin-left: 10px; float:left;"><strong id="avgCostPerContactSliderForHeatmapText">10</strong></div>
+	</div>
+	
+	<div style="clear:both;">
+	  <div style="float:left;">avg. revenue / successful sale (USD):</div>
+	  <span style="margin-left: 2px; margin-top:-25px; width:60%; float:left;" id="avgRevenuePerContactSliderForHeatmap"></span>
+	  <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderForHeatmapText">50</strong></div>
+	</div>
+	
+      </div><!-- containerFor2Sliders4Heatmap -->
+
+      <div id="profitheatmap" style='width:830px;'></div>
+      <script src="ProfitHeatMap.js"></script>
+      <p align="right"><small>[<a href="ProfitHeatmap.html" target="_profitheatmap">view in separate window</a>]</small></p>
+      
+      <div id="heatmaptooltip" class="hidden">
+        <p><span id="value"/></p>
+      </div>
+
+    </div><!-- containerForControlsAndProfitHeatMap -->
+    
 
     <h2>Recommendations</h2>
 
