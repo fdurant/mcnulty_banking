@@ -15,14 +15,14 @@
   <body>
     <p>During week 4, 5 and 6, the Metis Data Science Bootcamp zoomed in on the following technologies:</p>
     <ul>
-      <li>SQL and mySQL in the <a href="https://www.digitalocean.com" target="_blank">cloud</a>;</li>
+      <li>SQL and mySQL in the <a href="https://www.digitalocean.com" target="_blank">cloud</a> (0.5 day);</li>
       <li>Supervised learning with <a href="http://scikit-learn.org/" target="_blank">scikit-learn</a>
-	and <a href="http://statsmodels.sourceforge.net/" target="_blank">statsmodels</a>;</li>
-      <li>Interactive visualization with <a href="http://matplotlib.org/" target="_blank">matplotlib</a>, <a href="http://nbviewer.ipython.org/github/esss/ipython/blob/master/examples/Interactive%20Widgets/Index.ipynb" target="_blank">interactive widgets in iPython</a>, <a href="http://mpld3.github.io/" target="_blank">mpld3</a> and especially <a href="http://d3js.org/" target="_blank">D3.js</a>.</li>
+	and <a href="http://statsmodels.sourceforge.net/" target="_blank">statsmodels</a> (1.5 week);</li>
+      <li>Interactive visualization with <a href="http://matplotlib.org/" target="_blank">matplotlib</a>, <a href="http://nbviewer.ipython.org/github/esss/ipython/blob/master/examples/Interactive%20Widgets/Index.ipynb" target="_blank">interactive widgets in iPython</a>, <a href="http://mpld3.github.io/" target="_blank">mpld3</a> and especially <a href="http://d3js.org/" target="_blank">D3.js</a> (1.5 week).</li>
       </li>
     </ul>
 
-    <p>The remainder of this article describes the project and business context in which these technologies were applied.</p>
+    <p>The remainder of this article reports on the project and business context in which these technologies were applied.</p>
 
     <h2>Business questions</h2>
 
@@ -41,7 +41,7 @@
 
     <h2>Technical assignment</h2>
 
-    <p>Using the database, build a model to:</p>
+    <p>Using the historic customer database, build a model to:</p>
 
     <ul>
       <li><strong>predict</strong> which customers are (more) likely to buy the term deposit product</li>
@@ -53,7 +53,7 @@
     <ul>
       <li>an <a href="http://en.wikipedia.org/wiki/Receiver_operating_characteristic" target="_blank">ROC</a> curve</li>
       <li>a <a href="http://en.wikipedia.org/wiki/Lift_(data_mining)">lift</a> curve</li>
-      <li>a profit curve</li>
+      <li>a profit visualization</li>
     </ul>
 
     <h2>Data preparation, feature selection and model building</h2>
@@ -80,30 +80,30 @@
       But all in all, the three algorithms play in the same league.</p>
 
     <p>The selection of a specific FPR/TPR combination (and of a corresponding best algorithm) is for our customer to make.
-      In business terms, they will have to make a trade-off between:</p>
+      In business terms, this means making a trade-off between:</p>
     <ul>
       <li>Reaching sufficiently interested customers, which will bring in revenue</li>
-      <li>Annoying too many uninterested ones, while incurring the cost of making the contact</li>
+      <li>In the process, annoying too many uninterested ones, and incurring the cost of making these contact</li>
     </ul>
 
-    <p>Let's formulate this trade-off <strong>in operational terms</strong>.</p>
+    <p>On its own, the ROC curve does not tell us how to set the optimal threshold. Therefore, let's try to formulate the trade-off
+      more <strong>in operational terms</strong>,
+      by means of a <a href="http://en.wikipedia.org/wiki/Lift_(data_mining)" target="_blank">lift curve</a>.</p>
 
     <h2 align="center">Lift curve: trained model vs. baseline performance</h2>
 
-    <p>From our <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" target="_blank">reference dataset</a>, we know that only a fraction (&lt;10 &#37;) of our potential customers is going to accept an
-  offer to buy the term deposit product. The question, of course, is <strong>who</strong> these customers are. For each customer,
-      our trained models return a <strong>probability estimate</strong> of their purchase of the product.
-      This probability allows us to <strong>rank our
-	customers</strong> accordingly, which is key to making smart(er) decisions.</p>
+    <p>From our <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing" target="_blank">reference dataset</a>, we know that only a fraction (&lt;10 &#37;) of our potential customers will accept an
+  offer to buy the term deposit product. The question, of course, is <strong>who</strong> these customers are. For each customer
+      in the test set, our trained models return a <strong>probability estimate</strong> of their purchase of the product.
+      This probability allows us to <strong>rank our customers</strong> accordingly, which is key to making smart(er) decisions.</p>
 
-    <p>But first, for the sake of the argument, let's assume we only know the distribution of yes/no answers in the reference data set,
+    <p>But first, for the sake of the argument, let's assume we only know the distribution of yes/no answers in the training data set,
       and nothing more. The (near-perfect) diagonal line from (0,0) to (100, 100) in the graph below
       represents such a baseline case. The model behind it was built by <a href="http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html" target="_">randomly guessing</a>
-      who might accept or reject the offer, according to this yes/no distribution. Lacking any other information, this is how
-      bad we would do, <strong>worst case</strong>.</p>
+      who might accept or reject the offer, according to this yes/no distribution.</p>
 
-    <p> So, in the baseline case, if we were to contact 20&#37; of the customers, we can expect to
-      hit approximately that same 20&#37; of all customers who would actually buy the product. This is approximately
+    <p> So, in the baseline case, if we were to contact 20&#37; of the customers (x axis), we can expect to
+      hit approximately 20&#37; of all customers <em>who would actually buy the product</em> (y axis). This is approximately
       true for any other percentage point along this (near-perfect) diagonal.</p>
 
     <svg id="liftcurve" style="height:400px; width:100%; border-style:solid; border-width:1px;"></svg>
@@ -155,20 +155,20 @@
     <div id="containerFor2Sliders" style="height:100; padding-left:10px;">
     
       <div style="clear:both;">
-      <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
-      <span style="margin-left: 10px; margin-top: -25px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSlider"></span>
-      <div style="margin-left: 10px; margin-top: -5px; float:left;"><strong id="avgCostPerContactSliderText">10</strong></div>
+      <div style="float:left;">&nbsp;&nbsp;avg. cost per customer contact (USD):</div>
+      <span style="margin-left: 10px; margin-top: -20px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSlider"></span>
+      <div style="margin-left: 10px; margin-top: 0px; float:left;"><strong id="avgCostPerContactSliderText">10</strong></div>
       </div>
 
       <div style="clear:both;">
-      <div style="float:left;">avg. revenue / successful sale (USD):</div>
-      <span style="margin-left: 2px; margin-top:-25px; width:60%; float:left;" id="avgRevenuePerContactSlider"></span>
-      <div style="margin-left: 10px; margin-top:-5px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
+      <div style="float:left;">avg. revenue per successful sale (USD):</div>
+      <span style="margin-left: 2px; margin-top:-20px; width:60%; float:left;" id="avgRevenuePerContactSlider"></span>
+      <div style="margin-left: 10px; margin-top:0px; float:left"><strong id="avgRevenuePerContactSliderText">50</strong></div>
       </div>
 
     </div><!-- containerFor2Sliders -->
 
-    <svg id="profitcurve" style="height:400px; width:100%;"></svg>
+    <svg id="profitcurve" style="clear:both; height:400px; width:100%;"></svg>
     <script src="calcProfit.js" type="text/javascript" charset="utf-8"></script>
     <script src="ProfitCurve.js" type="text/javascript" charset="utf-8"></script>
 
@@ -193,16 +193,13 @@
     <h2>Profit heat map: impressionistic view on individual and cumulative profit contributions</h2>
 
     <p>How much does each <em>individual</em> customer contribute to cumulative profit? In the heatmap below, each cell
-    represents one customer. Customers are displayed in the ranking order defined by the model. Reading order is
-      left-to-right, top-down - the same as for written English.</p>
+      represents one customer from the test set. Customers are displayed in the ranking order defined by the model, with
+      the most probable buyer first. Reading order is  left-to-right, top-down - the same as for written English.</p>
 
     <p>In the baseline case, with default cost and revenue values, the heatmap progressively takes on deeper shades of red.
-      Since the customers are in random order, there are more negative than positive contributions, no matter which percentile
-    we look at. This is aptly demonstrated if you select profit: &quot;contribution per customer&quot;.</p>
-
-    <p>Now select a non-baseline model, and see how the random distribution of individual positive profit contributions
-    takes on a more ordered view. In the trained models, the positive profit contributions are indeed pushed towards the beginning
-      (top-left corner) of the heatmap.</p>
+      Since the baseline lists customers in random order, there are more negative than positive contributions,
+      no matter which region of the heatmap we look at. This is aptly demonstrated if you select
+      profit: &quot;contribution per individual customer&quot;.</p>
 
     <div id="containerForControlsAndProfitHeatMap" style="width:840px; border-style:solid; border-width:1px; border-color:black; padding:5px 5px 5px 10px">
 
@@ -216,28 +213,28 @@
 	</select>
 	<span style="float:left; margin-left:20px; padding-left:10px; valign:middle padding-top:5px">Profit</span>
 	<select id="profittype" style="float:left; margin-left:10px;">
-	  <option value="cumulative" selected="selected">Cumulative: including all higher-ranked customers</option>
-	  <option value="single">Contribution per customer</option>
+	  <option value="cumulative" selected="selected">Cumulative: includes contributions by higher-ranked customers</option>
+	  <option value="single">Contribution per individual customer</option>
 	</select>
       </div>
       
       <div id="containerFor2Sliders4Heatmap" style="clear:both; height:110; padding-left:10px; padding-top:30px;">
     
 	<div style="clear:both;">
-	  <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
-	  <span style="margin-left: 10px; margin-top: -25px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSliderForHeatmap"></span>
+	  <div style="float:left;">&nbsp;&nbsp;avg. cost per customer contact (USD):</div>
+	  <span style="margin-left: 10px; margin-top: -20px; width:30%; float:left; margin-bottom:0px;" id="avgCostPerContactSliderForHeatmap"></span>
 	  <div style="margin-left: 10px; float:left;"><strong id="avgCostPerContactSliderForHeatmapText">10</strong></div>
 	</div>
 	
 	<div style="clear:both; margin-top:30px;">
-	  <div style="float:left;">avg. revenue / successful sale (USD):</div>
-	  <span style="margin-left: 2px; margin-top:-25px; width:60%; float:left;" id="avgRevenuePerContactSliderForHeatmap"></span>
+	  <div style="float:left;">avg. revenue per successful sale (USD):</div>
+	  <span style="margin-left: 2px; margin-top:-20px; width:60%; float:left;" id="avgRevenuePerContactSliderForHeatmap"></span>
 	  <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderForHeatmapText">50</strong></div>
 	</div>
 	
       </div><!-- containerFor2Sliders4Heatmap -->
 
-      <div id="profitheatmap" style='width:830px;'></div>
+      <div id="profitheatmap" style="clear:both; width:830px;"></div>
       <script src="ProfitHeatMap.js"></script>
       
       <div id="heatmaptooltip" class="hidden">
@@ -248,14 +245,20 @@
 
     <p align="right" style="width:840px;"><small>[<a href="ProfitHeatmap.html" target="_profitheatmap">view in separate window</a>]</small></p>
 
-    <p>Now also select different settings of the cost and revenue parameters, to see how this influences the heatmap. </p>
+    <p>Now select a non-baseline model, and see how the random distribution of individual positive profit contributions
+    transforms into a more ordered view: the positive profit contributions are indeed pushed towards the beginning
+      (top-left corner) of the heatmap. This is the power of the learned models at work.</p>
+
+    <p>Finally, also select different configurations of the cost and revenue parameters, and see how this influences the heatmap.
+    For example, try the baseline model with cost 10 and revenue 90, as we did in the profit curve before. This configuration
+      confirms that the cumulative profit remains near the break-even line.</p>
 
     <h2>Recommendations</h2>
 
-    <p>Customers must be targeted in descending order of their probability to buy the product. Running the trained models on the
+    <p>Customers must be targeted in descending order of their probability to buy the product. Running the trained models on
       unseen customer data will provide such a ranking.</p>
 
-    <p>To enable an informed decision on when to continue or halt the campaign, the bank must provide information on cost and revenue
+    <p>To enable an informed decision about when to halt the campaign, the bank must first provide information on cost and revenue
       per (successful) contact.
       <ul>
 	<li>Without such information, we advise to stop when maximum cumulative lift is achieved,
@@ -264,6 +267,10 @@
 	  or when we have run out of budget, whichever comes first.</li>
       </ul>
     </p>
+
+    <p>Having set the cost and revenue variables, define the optimization criterion (e.g. maximum cumulative profit).
+      Then consult the profit curve and heatmap to identify which and how many customers to contact, most probable
+      buyers first.</p>
 
     <h2>Additional resources</h2>
 

@@ -15,7 +15,7 @@
 <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
 <script src="d3.slider.js" charset="utf-8"></script>
 
-<h2>Profit heat map: impressionistic view on cumulative profit</h2>
+<h2>Profit heat map: impressionistic view on individual and cumulative profit contributions</h2>
 
     <div id="containerForControlsAndProfitHeatMap" style="padding-top:0px">
 
@@ -29,21 +29,21 @@
 	</select>
 	<span style="float:left; margin-left:80px; padding-left:10px; valign:middle padding-top:5px">Profit</span>
 	<select id="profittype" style="float:left; margin-left:10px;">
-	  <option value="cumulative" selected="selected">Cumulative: including all higher-ranked customers</option>
-	  <option value="single">Contribution per customer</option>
+	  <option value="cumulative" selected="selected">Cumulative: includes contributions by higher-ranked customers</option>
+	  <option value="single">Contribution per individual customer</option>
 	</select>
       </div>
       
       <div id="containerFor2Sliders4Heatmap" style="clear:both; height:110; padding-left:10px; padding-top:30px;">
     
 	<div style="clear:both;">
-	  <div style="float:left;">&nbsp;&nbsp;avg. cost / customer contact (USD):</div>
+	  <div style="float:left;">&nbsp;&nbsp;avg. cost per customer contact (USD):</div>
 	  <span style="margin-left: 10px; margin-top: -25px; width:325px; float:left; margin-bottom:0px;" id="avgCostPerContactSliderForHeatmap"></span>
 	  <div style="margin-left: 10px; float:left;"><strong id="avgCostPerContactSliderForHeatmapText">10</strong></div>
 	</div>
 	
 	<div style="clear:both;">
-	  <div style="float:left;">avg. revenue / successful sale (USD):</div>
+	  <div style="float:left;">avg. revenue per successful sale (USD):</div>
 	  <span style="margin-left: 2px; margin-top:-25px; width:650px; float:left;" id="avgRevenuePerContactSliderForHeatmap"></span>
 	  <div style="margin-left: 10px; float:left"><strong id="avgRevenuePerContactSliderForHeatmapText">50</strong></div>
 	</div>

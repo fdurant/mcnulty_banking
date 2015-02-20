@@ -219,7 +219,7 @@ d3.json("ProfitCurve.json", function(error, json) {
 		    .style("top", (d3.event.pageY-10) + "px")
 		    .select("#value")
 		    //		    .text("point:"+d.row+","+d.col+"\ncumulative profit:"+d.cumProfit+"\ninstance ID:"+d.id+"\nheatVal:"+d.heatVal);
-		    .text("this customer (rank " + d.rank + ") contributes " + d.intervalProfit + " USD; the new cumulative profit/loss is: "+d.cumProfit+" USD");
+		    .text("this customer (rank " + d.rank + ") contributes " + d.intervalProfit + " USD; the cumulative profit/loss is: "+d.cumProfit+" USD");
 		    //Show the tooltip
 		    d3.select("#heatmaptooltip").classed("hidden", false);
 		})
